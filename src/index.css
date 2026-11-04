@@ -1,0 +1,282 @@
+:root {
+  /* palette */
+  --cream: #f7f1e6;
+  --card: #fffdf8;
+  --ink: #2b2a27;
+  --muted: #7d766b;
+  --line: #e7ddcc;
+  --ocean: #cfe4ee;
+  --land: #cfe6c6;
+  --land-edge: #aecba4;
+  --accent: #e9785b;
+  --accent-soft: #fbe3da;
+  --sage-soft: #eef4ea;
+  --sage-ink: #4f6b46;
+  --sky-soft: #eaf2f6;
+  --sky-ink: #45667a;
+  --warn-soft: #fff4d6;
+  --warn-ink: #7a5b12;
+  --danger-soft: #fde4e1;
+  --danger-ink: #8f2f22;
+  --shadow: 0 12px 40px rgba(70, 55, 30, 0.10);
+ 
+  /* type */
+  --font-display: "Fraunces", Georgia, serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+}
+ 
+* { box-sizing: border-box; }
+ 
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  overflow: hidden;
+}
+ 
+#globe { position: fixed; inset: 0; }
+ 
+/* ---------- Header ---------- */
+.site-header {
+  position: fixed; top: 28px; left: 0; right: 0;
+  text-align: center; z-index: 2; pointer-events: none;
+  padding: 0 16px;
+}
+.site-header h1 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 30px; margin: 0; letter-spacing: -0.01em;
+}
+.site-header p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+ 
+/* ---------- Search ---------- */
+.search {
+  position: fixed; left: 50%; bottom: 36px; transform: translateX(-50%);
+  width: min(440px, calc(100% - 32px)); z-index: 3;
+  transition: opacity .25s, transform .25s;
+}
+/* When the card is open, slide the search left so the card doesn't cover it */
+.search.with-panel { left: calc(50% - 216px); }
+@media (max-width: 1100px) {
+  .search.with-panel { opacity: 0; pointer-events: none; transform: translate(-50%, 12px); }
+}
+.search input {
+  width: 100%; padding: 17px 22px;
+  border-radius: 999px; border: 1px solid var(--line);
+  background: var(--card); color: var(--ink);
+  font: inherit; font-size: 16px;
+  box-shadow: var(--shadow); outline: none;
+}
+.search input:focus { border-color: var(--accent); }
+.suggestions {
+  position: absolute; bottom: calc(100% + 10px); left: 0; right: 0;
+  margin: 0; padding: 6px; list-style: none;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 20px; box-shadow: var(--shadow);
+}
+.suggestions li {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 11px 16px; border-radius: 14px; cursor: pointer; font-size: 15px;
+}
+.suggestions li.active { background: var(--accent-soft); }
+.suggestions li.empty { cursor: default; color: var(--muted); background: none; }
+.suggestion-region { font-size: 12px; color: var(--muted); }
+ 
+/* Hover label on the globe */
+.globe-tip {
+  font-family: var(--font-body); font-size: 13px;
+  background: var(--card); color: var(--ink);
+  padding: 6px 10px; border-radius: 10px; border: 1px solid var(--line);
+}
+.globe-tip-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+ 
+/* ---------- Panel / card ---------- */
+.panel {
+  position: fixed; top: 50%; right: 32px;
+  width: min(400px, calc(100% - 32px));
+  transform: translate(30px, -50%); opacity: 0; pointer-events: none;
+  transition: transform .35s cubic-bezier(.2,.8,.2,1), opacity .35s;
+  z-index: 4;
+}
+.panel.open { transform: translate(0, -50%); opacity: 1; pointer-events: auto; }
+ 
+.card {
+  position: relative;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 28px; padding: 28px 26px 24px;
+  box-shadow: var(--shadow);
+  max-height: calc(100vh - 64px); overflow-y: auto;
+  animation: cardIn .4s cubic-bezier(.2,.8,.2,1);
+}
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+ 
+.close {
+  position: absolute; top: 16px; right: 16px;
+  width: 34px; height: 34px; border-radius: 50%;
+  border: none; background: transparent; color: var(--muted);
+  font-size: 20px; cursor: pointer;
+}
+.close:hover { background: var(--accent-soft); color: var(--ink); }
+ 
+.eyebrow {
+  display: inline-block; font-size: 13px; font-weight: 600;
+  color: var(--accent); background: var(--accent-soft);
+  padding: 5px 12px; border-radius: 999px;
+  margin-right: 40px;
+}
+.card h2 {
+  font-family: var(--font-display); font-weight: 600;
+  font-size: 26px; margin: 14px 0 4px; letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+.sub { color: var(--muted); font-size: 14px; margin: 0 0 16px; }
+ 
+/* Travel advisory flag */
+.advisory {
+  display: grid; gap: 2px;
+  font-size: 12.5px; line-height: 1.4;
+  padding: 10px 12px; border-radius: 14px; margin: 4px 0 16px;
+}
+.advisory.level-3 { background: var(--warn-soft); color: var(--warn-ink); }
+.advisory.level-4 { background: var(--danger-soft); color: var(--danger-ink); }
+.advisory a { color: inherit; font-weight: 600; }
+ 
+/* Vibe chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+.chip {
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+  padding: 9px 14px; border-radius: 999px; font: inherit; font-size: 14px;
+  cursor: pointer; transition: background .15s, border-color .15s, transform .15s;
+}
+.chip:hover { border-color: var(--accent); }
+.chip.on { background: var(--accent); border-color: var(--accent); color: #fff; transform: scale(1.03); }
+.chip:disabled { opacity: .4; cursor: not-allowed; }
+ 
+/* Buttons */
+.primary {
+  width: 100%; padding: 15px; border: none; border-radius: 999px;
+  background: var(--ink); color: var(--card); font: inherit; font-weight: 600; font-size: 15px;
+  cursor: pointer; transition: opacity .15s, transform .15s;
+}
+.primary:hover:not(:disabled) { transform: translateY(-1px); }
+.primary:disabled { opacity: .3; cursor: not-allowed; }
+.ghost {
+  flex: 1; padding: 13px; border-radius: 999px; border: 1px solid var(--line);
+  background: transparent; font: inherit; font-size: 14px; color: var(--ink); cursor: pointer;
+}
+.ghost:hover { border-color: var(--accent); }
+.row { display: flex; gap: 8px; margin-top: 18px; }
+ 
+button:focus-visible, a:focus-visible, input:focus-visible, summary:focus-visible {
+  outline: 2px solid var(--accent); outline-offset: 2px;
+}
+ 
+/* Tabs on the results card */
+.tabs {
+  display: flex; gap: 6px; overflow-x: auto;
+  margin: 4px 0 14px; padding-bottom: 2px;
+}
+.tabs button {
+  flex: none; border: 1px solid var(--line); background: transparent; color: var(--muted);
+  padding: 7px 12px; border-radius: 999px; font: inherit; font-size: 13px; cursor: pointer;
+}
+.tabs button.on { background: var(--ink); border-color: var(--ink); color: var(--card); }
+ 
+/* Picks */
+.recs { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.rec {
+  display: grid; grid-template-columns: 30px 1fr; gap: 12px; align-items: start;
+  padding: 14px; border: 1px solid var(--line); border-radius: 18px;
+  opacity: 0; animation: cardIn .4s cubic-bezier(.2,.8,.2,1) forwards;
+}
+.rec-body { min-width: 0; }
+.num {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--accent-soft); color: var(--accent);
+  display: grid; place-items: center; font-weight: 600; font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+.rec-name {
+  display: block; margin-top: 4px;
+  font-size: 15px; font-weight: 600; color: var(--ink);
+  text-decoration: none; overflow-wrap: anywhere;
+}
+.rec-name:hover { color: var(--accent); text-decoration: underline; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.tag { font-size: 12px; padding: 3px 9px; border-radius: 999px; background: var(--sage-soft); color: var(--sage-ink); }
+.tag.nearby { background: var(--sky-soft); color: var(--sky-ink); }
+ 
+/* Sources */
+.sources { margin-top: 16px; font-size: 13px; }
+.sources summary { cursor: pointer; color: var(--muted); font-weight: 600; }
+.sources ul { margin: 8px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+.sources a { color: var(--sky-ink); }
+ 
+.note { font-size: 12px; color: var(--muted); text-align: center; margin: 14px 0 0; }
+ 
+/* ---------- Phones: panel becomes a bottom sheet ---------- */
+@media (max-width: 720px) {
+  .site-header { top: 20px; }
+  .site-header h1 { font-size: 24px; }
+  .panel {
+    top: auto; bottom: 0; right: 0; left: 0; width: 100%;
+    transform: translateY(40px);
+  }
+  .panel.open { transform: translateY(0); }
+  .card {
+    border-radius: 28px 28px 0 0; border-bottom: none;
+    max-height: 72vh; padding: 24px 18px 28px;
+  }
+}
+ 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+.card h2 + .recs, .card h2 + .advisory { margin-top: 12px; }
+ 
+/* Shown only if something breaks */
+.globe-error {
+  position: fixed; top: 45%; left: 50%; transform: translateX(-50%);
+  width: min(420px, calc(100% - 32px)); text-align: center;
+  color: var(--muted); font-size: 14px;
+}
+.crash { padding: 40px max(16px, 5vw); overflow: auto; height: 100%; }
+.crash h1 { font-family: var(--font-display); font-size: 26px; margin: 0 0 8px; }
+.crash pre {
+  white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px;
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px;
+}
+ 
+/* ---------- Surprise-me spin ---------- */
+.search-row { display: flex; gap: 10px; align-items: center; }
+.search-row input { flex: 1; min-width: 0; }
+.spin-btn {
+  flex: none; width: 56px; height: 56px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--card);
+  font-size: 24px; line-height: 1; cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform .2s, border-color .2s;
+}
+.spin-btn:hover:not(:disabled) { border-color: var(--accent); transform: rotate(-20deg) scale(1.06); }
+.spin-btn.on { animation: dice 0.6s linear infinite; cursor: default; }
+@keyframes dice { to { transform: rotate(360deg); } }
+ 
+.spin-hint {
+  position: fixed; top: 104px; left: 50%; transform: translateX(-50%);
+  margin: 0; z-index: 3; pointer-events: none;
+  background: var(--ink); color: var(--card);
+  font-size: 14px; font-weight: 600;
+  padding: 10px 18px; border-radius: 999px; box-shadow: var(--shadow);
+  animation: cardIn .3s cubic-bezier(.2,.8,.2,1);
+  white-space: nowrap;
+}
+.hint-touch { display: none; }
+@media (hover: none) {
+  .hint-mouse { display: none; }
+  .hint-touch { display: inline; }
+}
+@media (max-width: 720px) { .spin-hint { top: 84px; } }
